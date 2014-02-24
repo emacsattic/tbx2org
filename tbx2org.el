@@ -5,7 +5,7 @@
 ;; Author: istib
 ;; URL: https://github.com/istib/helm-mode-manager
 ;; Version: 0.1
-;; Package-Requires: ((dash "2.5.0") (s "1.8.0"))
+;; Package-Requires: ((dash "2.5.0") (s "1.8.0") (cl-lib "0.4"))
 ;; Keywords: org-mode
 
 ;; This file is not part of GNU Emacs
@@ -27,10 +27,12 @@
 
 ;;; Code:
 
-
+(require 'cl-lib)
 (require 'xml)
 (require 'dash)
 (require 's)
+
+(declare-function org-set-property "org")
 
 (defun tbx-import-file (file &optional dest-buffer)
   "imports tinderbox FILE into DEST-BUFFER (or new buffer, if nil)"
@@ -38,7 +40,7 @@
   (condition-case nil
       (let* ((dest-buffer (or dest-buffer (generate-new-buffer "*tinderbox import*")))
              (xml-file    (xml-parse-file file))
-             (doc-root    (cdddr (cdddar xml-file)))
+             (doc-root    (cl-cdddr (cl-cdddar xml-file)))
              (parent-node (car (xml-get-children doc-root 'item)))
              (leaves      (xml-get-children parent-node 'item)))
      (with-current-buffer dest-buffer (org-mode))
@@ -57,7 +59,7 @@ node (TBX-NODE). returns NIL if none is found"
         (let* ((candidate      (car attributes))
                (candidate-name (xml-get-attribute candidate 'name)))
           (if (string= candidate-name attr)
-              (throw 'found (caddr candidate)))
+              (throw 'found (cl-caddr candidate)))
         (setq attributes (cdr attributes)))))))
 
 (defun tbx-node-children (tbx-node)
@@ -70,7 +72,7 @@ node (TBX-NODE). returns NIL if none is found"
 
 (defun tbx-node-text (tbx-node)
   "returns TEXT content of a tinderbox node"
-  (caddar (xml-get-children tbx-node 'text)))
+  (cl-caddar (xml-get-children tbx-node 'text)))
 
 (defun tbx-node-defined-attributes (tbx-node)
   "returns all 'key attributes' defined on TBX-NODE"
@@ -112,8 +114,8 @@ in the form of property/value pairs, if value is not nil"
              (heading    node-title))
         (insert (concat org-prefix " " heading "\n")))
       ;; properties
-      (mapcar (lambda (pair) (tbx-set-org-property-from-tbx-attribute pair))
-              node-properties)
+      (mapc (lambda (pair) (tbx-set-org-property-from-tbx-attribute pair))
+            node-properties)
       ;; text
       (if (not (null node-text))
         (insert (concat "\n" node-text "\n"))))
