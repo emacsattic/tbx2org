@@ -3,7 +3,7 @@
 ;; Copyright (C) 2014 istib
 
 ;; Author: istib
-;; URL: https://github.com/istib/helm-mode-manager
+;; URL: https://github.com/istib/tbx2org
 ;; Version: 0.1
 ;; Package-Requires: ((dash "2.5.0") (s "1.8.0") (cl-lib "0.4"))
 ;; Keywords: org-mode
@@ -34,6 +34,7 @@
 
 (declare-function org-set-property "org")
 
+;;;###autoload
 (defun tbx-import-file (file &optional dest-buffer)
   "imports tinderbox FILE into DEST-BUFFER (or new buffer, if nil)"
   (interactive "f")
