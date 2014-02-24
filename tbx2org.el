@@ -31,8 +31,7 @@
 (require 'xml)
 (require 'dash)
 (require 's)
-
-(declare-function org-set-property "org")
+(require 'org)
 
 ;;;###autoload
 (defun tbx-import-file (file &optional dest-buffer)
@@ -99,7 +98,7 @@ in the form of property/value pairs, if value is not nil"
   "set org property at point from attribute/value pair of tinderbox node"
   (let ((prop (car attr))
         (val  (cdr attr)))
-    (if (not (eq val nil))
+    (if (not (null val))
         (org-set-property prop val))))
 
 (defun insert-org-node-from-tbx-node (tbx-node dest-buffer &optional level)
