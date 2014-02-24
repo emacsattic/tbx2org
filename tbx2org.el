@@ -1,4 +1,4 @@
-;;; tbx2org.el --- tinderbox to org-mode conversion
+;;; tbx2org.el --- Tinderbox to org-mode conversion
 
 ;; Copyright (C) 2014 istib
 
